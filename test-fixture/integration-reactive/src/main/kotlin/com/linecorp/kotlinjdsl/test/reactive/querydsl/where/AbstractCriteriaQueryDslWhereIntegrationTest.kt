@@ -8,7 +8,7 @@ import com.linecorp.kotlinjdsl.subquery
 import com.linecorp.kotlinjdsl.test.entity.order.Order
 import com.linecorp.kotlinjdsl.test.entity.order.OrderGroup
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -19,12 +19,12 @@ abstract class AbstractCriteriaQueryDslWhereIntegrationTest<S> : CriteriaQueryDs
     private val order3 = order { purchaserId = 3000 }
 
     @BeforeEach
-    fun setUp() = runBlocking {
+    fun setUp(): Unit = blockingDetect {
         persistAll(order1, order2, order3)
     }
 
     @Test
-    fun where() = runBlocking {
+    fun where(): Unit = blockingDetect {
         // when
         val order = withFactory { queryFactory ->
             queryFactory.singleQuery<Order> {
@@ -45,7 +45,7 @@ abstract class AbstractCriteriaQueryDslWhereIntegrationTest<S> : CriteriaQueryDs
     }
 
     @Test
-    fun `where using subquery`() = runBlocking {
+    fun `where using subquery`(): Unit = blockingDetect {
         // when
         val orderIds = withFactory { queryFactory ->
             val subquery = queryFactory.subquery<Long> {

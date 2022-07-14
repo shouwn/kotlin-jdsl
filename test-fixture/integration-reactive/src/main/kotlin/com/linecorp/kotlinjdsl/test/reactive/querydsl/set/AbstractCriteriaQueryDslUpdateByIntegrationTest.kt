@@ -7,7 +7,7 @@ import com.linecorp.kotlinjdsl.test.entity.order.Order
 import com.linecorp.kotlinjdsl.test.entity.order.OrderAddress
 import com.linecorp.kotlinjdsl.test.entity.order.OrderGroup
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import com.linecorp.kotlinjdsl.updateQuery
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,12 +18,12 @@ abstract class AbstractCriteriaQueryDslUpdateByIntegrationTest<S> : CriteriaQuer
     private val order3 = order { purchaserId = 2000 }
 
     @BeforeEach
-    fun setUp() = runBlocking {
+    fun setUp(): Unit = blockingDetect {
         persistAll(order1, order2, order3)
     }
 
     @Test
-    fun update() = runBlocking {
+    fun update(): Unit = blockingDetect {
         // when
         val purchaserIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -53,13 +53,13 @@ abstract class AbstractCriteriaQueryDslUpdateByIntegrationTest<S> : CriteriaQuer
     }
 
     @Test
-    fun updateEmbedded() = runBlocking {
+    fun updateEmbedded(): Unit = blockingDetect {
         // given
         val address1 = orderAddress { }
         val group1 = orderGroup { address = address1 }
         val order1 = order { groups = hashSetOf(group1) }
 
-        persistAll(order1)
+        persist(order1)
 
         withFactory { queryFactory ->
             queryFactory.updateQuery<OrderAddress> {

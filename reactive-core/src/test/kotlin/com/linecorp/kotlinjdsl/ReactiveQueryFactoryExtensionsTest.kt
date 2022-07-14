@@ -8,10 +8,10 @@ import com.linecorp.kotlinjdsl.querydsl.CriteriaUpdateQueryDsl
 import com.linecorp.kotlinjdsl.querydsl.SubqueryDsl
 import com.linecorp.kotlinjdsl.querydsl.expression.col
 import com.linecorp.kotlinjdsl.test.WithKotlinJdslAssertions
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -27,7 +27,7 @@ internal class ReactiveQueryFactoryExtensionsTest : WithKotlinJdslAssertions {
     private lateinit var subqueryExpressionSpec: SubqueryExpressionSpec<Data1>
 
     @Test
-    fun singleQuery() = runBlocking {
+    fun singleQuery(): Unit = blockingDetect {
         // given
         every { queryFactory.selectQuery<Data1>(any(), any()) } returns query
         coEvery { query.singleResult() } returns Data1()
@@ -55,7 +55,7 @@ internal class ReactiveQueryFactoryExtensionsTest : WithKotlinJdslAssertions {
     }
 
     @Test
-    fun listQuery() = runBlocking {
+    fun listQuery(): Unit = blockingDetect {
         // given
         every { queryFactory.selectQuery<Data1>(any(), any()) } returns query
         coEvery { query.resultList() } returns listOf(Data1())

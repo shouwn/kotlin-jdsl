@@ -5,7 +5,7 @@ import com.linecorp.kotlinjdsl.querydsl.expression.col
 import com.linecorp.kotlinjdsl.querydsl.expression.count
 import com.linecorp.kotlinjdsl.test.entity.order.Order
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -15,13 +15,13 @@ abstract class AbstractCriteriaQueryDslHavingIntegrationTest<S> : CriteriaQueryD
     private val order3 = order { purchaserId = 2000 }
 
     @BeforeEach
-    fun setUp() = runBlocking {
+    fun setUp(): Unit = blockingDetect {
         persistAll(order1, order2, order3)
 
     }
 
     @Test
-    fun having() = runBlocking {
+    fun having(): Unit = blockingDetect {
         // when
         val purchaserIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {

@@ -7,10 +7,10 @@ import com.linecorp.kotlinjdsl.test.entity.order.Order
 import com.linecorp.kotlinjdsl.test.entity.order.OrderItem
 import com.linecorp.kotlinjdsl.test.entity.test.TestTable
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.math.BigDecimal
 
 abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQueryDslIntegrationTest<S> {
     private val orderItem1 = orderItem { productName = "test1"; productImage = null; price = 10; claimed = true }
@@ -34,12 +34,12 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     private val orders = listOf(order1, order2, order3)
 
     @BeforeEach
-    fun setUp() = runBlocking {
+    fun setUp(): Unit = runBlocking {
         persistAll(order1, order2, order3)
     }
 
     @Test
-    fun entity() = runBlocking {
+    fun entity(): Unit = blockingDetect {
         // when
         val orders = withFactory { queryFactory ->
             queryFactory.listQuery<Order> {
@@ -53,10 +53,10 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun entityAlias() = runBlocking {
+    fun entityAlias(): Unit = blockingDetect {
         // when
         val orders = withFactory { queryFactory ->
-            queryFactory.listQuery<Order> {
+            queryFactory.listQuery {
                 val entity = entity(Order::class, "orderAlias")
                 select(entity)
                 from(entity)
@@ -68,10 +68,10 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun literal() = runBlocking {
+    fun literal(): Unit = blockingDetect {
         // when
         val literals = withFactory { queryFactory ->
-            queryFactory.listQuery<Int> {
+            queryFactory.listQuery {
                 select(literal(10))
                 from(entity(Order::class))
             }
@@ -82,7 +82,7 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun nullLiteral() = runBlocking {
+    fun nullLiteral(): Unit = blockingDetect {
         // when
         val literals = withFactory { queryFactory ->
             queryFactory.listQuery<Int?> {
@@ -96,10 +96,10 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun column() = runBlocking {
+    fun column(): Unit = blockingDetect {
         // when
         val literals = withFactory { queryFactory ->
-            queryFactory.listQuery<Long> {
+            queryFactory.listQuery {
                 select(column(Order::id))
                 from(entity(Order::class))
             }
@@ -110,10 +110,10 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun max() = runBlocking {
+    fun max(): Unit = blockingDetect {
         // when
         val max = withFactory { queryFactory ->
-            queryFactory.singleQuery<BigDecimal> {
+            queryFactory.singleQuery {
                 select(max(OrderItem::price))
                 from(entity(OrderItem::class))
             }
@@ -124,10 +124,10 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun min() = runBlocking {
+    fun min(): Unit = blockingDetect {
         // when
         val min = withFactory { queryFactory ->
-            queryFactory.singleQuery<BigDecimal> {
+            queryFactory.singleQuery {
                 select(min(OrderItem::price))
                 from(entity(OrderItem::class))
             }
@@ -138,10 +138,10 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun avg() = runBlocking {
+    fun avg(): Unit = blockingDetect {
         // when
         val avg = withFactory { queryFactory ->
-            queryFactory.singleQuery<Double> {
+            queryFactory.singleQuery {
                 select(avg(OrderItem::price))
                 from(entity(OrderItem::class))
             }
@@ -152,10 +152,10 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun sum() = runBlocking {
+    fun sum(): Unit = blockingDetect {
         // when
         val sum = withFactory { queryFactory ->
-            queryFactory.singleQuery<BigDecimal> {
+            queryFactory.singleQuery {
                 select(sum(OrderItem::price))
                 from(entity(OrderItem::class))
             }
@@ -166,7 +166,7 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun sumWhen() = runBlocking {
+    fun sumWhen(): Unit = blockingDetect {
         // when
         data class DataDTO(
             val id: Long,
@@ -204,10 +204,10 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun count() = runBlocking {
+    fun count(): Unit = blockingDetect {
         // when
         val count = withFactory { queryFactory ->
-            queryFactory.singleQuery<Long> {
+            queryFactory.singleQuery {
                 select(count(OrderItem::id))
                 from(entity(OrderItem::class))
             }
@@ -217,10 +217,10 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun countExpression() = runBlocking {
+    fun countExpression(): Unit = blockingDetect {
         // when
         val count = withFactory { queryFactory ->
-            queryFactory.singleQuery<Long> {
+            queryFactory.singleQuery {
                 select(
                     count(literal(1))
                 )
@@ -233,10 +233,10 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun countDistinct() = runBlocking {
+    fun countDistinct(): Unit = blockingDetect {
         // when
         val count = withFactory { queryFactory ->
-            queryFactory.singleQuery<Long> {
+            queryFactory.singleQuery {
                 select(countDistinct(OrderItem::productName))
                 from(entity(OrderItem::class))
             }
@@ -247,10 +247,10 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun greatest() = runBlocking {
+    fun greatest(): Unit = blockingDetect {
         // when
         val greatest = withFactory { queryFactory ->
-            queryFactory.singleQuery<String> {
+            queryFactory.singleQuery {
                 select(greatest(OrderItem::productName))
                 from(entity(OrderItem::class))
             }
@@ -261,10 +261,10 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun least() = runBlocking {
+    fun least(): Unit = blockingDetect {
         // when
         val least = withFactory { queryFactory ->
-            queryFactory.singleQuery<String> {
+            queryFactory.singleQuery {
                 select(least(OrderItem::productName))
                 from(entity(OrderItem::class))
             }
@@ -275,7 +275,7 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     }
 
     @Test
-    fun caseWhen() = runBlocking {
+    fun caseWhen(): Unit = blockingDetect {
         // when
         val values = withFactory { queryFactory ->
             queryFactory.listQuery<Int?> {

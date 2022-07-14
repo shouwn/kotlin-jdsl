@@ -10,18 +10,18 @@ import com.linecorp.kotlinjdsl.test.entity.order.OrderAddress
 import com.linecorp.kotlinjdsl.test.entity.order.OrderGroup
 import com.linecorp.kotlinjdsl.test.entity.order.OrderItem
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import org.junit.jupiter.api.Test
 
 abstract class AbstractJoinDslTest<S> : CriteriaQueryDslIntegrationTest<S>, WithKotlinJdslAssertions {
     @Test
-    fun joinOneToOne() = runBlocking {
+    fun joinOneToOne(): Unit = blockingDetect {
         // given
         val address1 = orderAddress { }
         val group1 = orderGroup { address = address1 }
         val order1 = order { groups = hashSetOf(group1) }
 
-        persistAll(order1)
+        persist(order1)
 
         // when
         val query = withFactory { queryFactory ->
@@ -39,14 +39,14 @@ abstract class AbstractJoinDslTest<S> : CriteriaQueryDslIntegrationTest<S>, With
     }
 
     @Test
-    fun joinOneToMany() = runBlocking {
+    fun joinOneToMany(): Unit = blockingDetect {
         // given
         val orderItem1 = orderItem { productId = 1000 }
         val orderItem2 = orderItem { productId = 2000 }
 
         val order1 = order { groups = hashSetOf(orderGroup { items = hashSetOf(orderItem1, orderItem2) }) }
 
-        persistAll(order1)
+        persist(order1)
 
         // when
         val query = withFactory { queryFactory ->
@@ -64,22 +64,22 @@ abstract class AbstractJoinDslTest<S> : CriteriaQueryDslIntegrationTest<S>, With
     }
 
     @Test
-    fun crossJoin() = runBlocking {
+    fun crossJoin(): Unit = blockingDetect {
         // given
         val orderItem1 = orderItem { productId = 1000 }
         val orderItem2 = orderItem { productId = 2000 }
 
         val order1 = order { groups = hashSetOf(orderGroup { items = hashSetOf(orderItem1, orderItem2) }) }
 
-        persistAll(order1)
+        persist(order1)
 
         val delivery1 = delivery { orderId = order1.id }
 
-        persistAll(delivery1)
+        persist(delivery1)
 
         // when
         val query = withFactory { queryFactory ->
-            queryFactory.listQuery<Long> {
+            queryFactory.listQuery {
                 select(col(Delivery::id))
                 from(entity(Order::class))
                 join(Delivery::class, on { col(Delivery::orderId).equal(col(Order::id)) })
@@ -93,17 +93,17 @@ abstract class AbstractJoinDslTest<S> : CriteriaQueryDslIntegrationTest<S>, With
     }
 
     @Test
-    fun associateWithEmbedded() = runBlocking {
+    fun associateWithEmbedded(): Unit = blockingDetect {
         // given
         val address1 = orderAddress { zipCode = "15022" }
         val group1 = orderGroup { address = address1 }
         val order1 = order { groups = hashSetOf(group1) }
 
-        persistAll(order1)
+        persist(order1)
 
         // when
         val query = withFactory { queryFactory ->
-            queryFactory.listQuery<String> {
+            queryFactory.listQuery {
                 select(col(Address::zipCode))
                 from(entity(OrderAddress::class))
                 associate(OrderAddress::class, Address::class, on(OrderAddress::address))

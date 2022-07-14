@@ -8,10 +8,10 @@ import com.linecorp.kotlinjdsl.querydsl.expression.column
 import com.linecorp.kotlinjdsl.spring.reactive.*
 import com.linecorp.kotlinjdsl.spring.reactive.querydsl.*
 import com.linecorp.kotlinjdsl.test.WithKotlinJdslAssertions
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.data.domain.Page
@@ -32,7 +32,7 @@ internal class SpringDataReactiveQueryFactoryExtensionsTest : WithKotlinJdslAsse
     private lateinit var page: Page<Data1>
 
     @Test
-    fun singleQuery(): Unit = runBlocking {
+    fun singleQuery(): Unit = blockingDetect {
         // given
         every { queryFactory.selectQuery<Data1>(any(), any()) } returns reactiveQuery
         coEvery { reactiveQuery.singleResult() } returns Data1()
@@ -60,7 +60,7 @@ internal class SpringDataReactiveQueryFactoryExtensionsTest : WithKotlinJdslAsse
     }
 
     @Test
-    fun listQuery(): Unit = runBlocking {
+    fun listQuery(): Unit = blockingDetect {
         // given
         every { queryFactory.selectQuery<Data1>(any(), any()) } returns reactiveQuery
         coEvery { reactiveQuery.resultList() } returns listOf(Data1())
@@ -88,7 +88,7 @@ internal class SpringDataReactiveQueryFactoryExtensionsTest : WithKotlinJdslAsse
     }
 
     @Test
-    fun selectQuery(): Unit = runBlocking {
+    fun selectQuery(): Unit = blockingDetect {
         // given
         every { queryFactory.selectQuery<Data1>(any(), any()) } returns reactiveQuery
 
@@ -179,7 +179,7 @@ internal class SpringDataReactiveQueryFactoryExtensionsTest : WithKotlinJdslAsse
     }
 
     @Test
-    fun pageQuery() = runBlocking {
+    fun pageQuery(): Unit = blockingDetect {
         // given
         coEvery { queryFactory.pageQuery<Data1>(any(), any(), any()) } returns page
 
@@ -204,7 +204,7 @@ internal class SpringDataReactiveQueryFactoryExtensionsTest : WithKotlinJdslAsse
     }
 
     @Test
-    fun `pageQuery with countProjection`() = runBlocking {
+    fun `pageQuery with countProjection`(): Unit = blockingDetect {
         // given
         coEvery { queryFactory.pageQuery<Data1>(any(), any(), any(), any()) } returns page
 

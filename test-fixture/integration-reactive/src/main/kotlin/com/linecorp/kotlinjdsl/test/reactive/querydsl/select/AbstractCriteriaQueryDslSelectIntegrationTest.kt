@@ -10,7 +10,7 @@ import com.linecorp.kotlinjdsl.subquery
 import com.linecorp.kotlinjdsl.test.entity.order.Order
 import com.linecorp.kotlinjdsl.test.entity.order.OrderItem
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.math.sqrt
@@ -27,12 +27,12 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     }
 
     @BeforeEach
-    fun setUp() = runBlocking {
+    fun setUp(): Unit = blockingDetect {
         persistAll(order1, order2, order3)
     }
 
     @Test
-    fun `singleQuery - select single expression`() = runBlocking {
+    fun `singleQuery - select single expression`(): Unit = blockingDetect {
         // when
         val purchaserId = withFactory { queryFactory ->
             queryFactory.singleQuery<Long> {
@@ -46,7 +46,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     }
 
     @Test
-    fun `listQuery - select single entity`() = runBlocking {
+    fun `listQuery - select single entity`(): Unit = blockingDetect {
         // when
         val orders = withFactory { queryFactory ->
             queryFactory.listQuery<Order> {
@@ -61,7 +61,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     }
 
     @Test
-    fun `listQuery - select single column`() = runBlocking {
+    fun `listQuery - select single column`(): Unit = blockingDetect {
         // when
         val orderIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -76,7 +76,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     }
 
     @Test
-    fun `listQuery - select single expression`() = runBlocking {
+    fun `listQuery - select single expression`(): Unit = blockingDetect {
         // when
         val counts = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -91,7 +91,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     }
 
     @Test
-    fun `listQuery - select distinct single column`() = runBlocking {
+    fun `listQuery - select distinct single column`(): Unit = blockingDetect {
         val purchaserIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
                 selectDistinct(col(Order::purchaserId))
@@ -109,7 +109,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
      * so for tests that generate an exception like this, open it so that it can be extended with open.
      */
     @Test
-    open fun `listQuery - subquery in select, subquery in from`() = runBlocking {
+    open fun `listQuery - subquery in select, subquery in from`(): Unit = blockingDetect {
         val counts = withFactory { queryFactory ->
             val subquery = queryFactory.subquery<Long> {
                 val order = entity(Order::class, "o")
@@ -130,7 +130,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     }
 
     @Test
-    fun `function - sqrt function, single parameter`() = runBlocking {
+    fun `function - sqrt function, single parameter`(): Unit = blockingDetect {
         val purchaserIdSquareRoot = withFactory { queryFactory ->
             queryFactory.singleQuery<Double> {
                 select(function("sqrt", col(Order::purchaserId)))
@@ -145,7 +145,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     }
 
     @Test
-    fun `function - substring function, multiple parameters`() = runBlocking {
+    fun `function - substring function, multiple parameters`(): Unit = blockingDetect {
         val result = withFactory { queryFactory ->
             queryFactory.singleQuery<String> {
                 select(function("substring", col(OrderItem::productName), literal(1), literal(2)))

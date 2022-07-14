@@ -19,7 +19,7 @@ import com.linecorp.kotlinjdsl.test.entity.order.Order
 import com.linecorp.kotlinjdsl.test.entity.order.OrderGroup
 import com.linecorp.kotlinjdsl.test.entity.order.OrderItem
 import com.linecorp.kotlinjdsl.test.reactive.MutinySessionFactoryExtension
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import io.smallrye.mutiny.coroutines.awaitSuspending
 import org.hibernate.reactive.mutiny.Mutiny
 import org.junit.jupiter.api.BeforeEach
@@ -47,7 +47,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
             subqueryCreator = SubqueryCreatorImpl()
         )
         sequenceOf(order1, order2, order3, order4).forEach {
-            runBlocking {
+            blockingDetect {
                 sessionFactory.withSession { session -> session.persist(it).flatMap { session.flush() } }
                     .awaitSuspending()
             }
@@ -55,7 +55,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
     }
 
     @Test
-    fun executeSessionWithFactory() = runBlocking {
+    fun executeSessionWithFactory(): Unit = blockingDetect {
         val order = order { purchaserId = 5000 }
         val actual = queryFactory.withFactory { session, factory ->
             session.persist(order).awaitSuspending()
@@ -72,7 +72,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
     }
 
     @Test
-    fun executeWithFactory() = runBlocking {
+    fun executeWithFactory(): Unit = blockingDetect {
         val actual = queryFactory.withFactory { factory ->
             factory.singleQuery<Order> {
                 select(entity(Order::class))
@@ -85,7 +85,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
     }
 
     @Test
-    fun singleQuery() = runBlocking {
+    fun singleQuery(): Unit = blockingDetect {
         // when
         val actual = queryFactory.singleQuery<Order> {
             select(entity(Order::class))
@@ -98,7 +98,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
     }
 
     @Test
-    fun `singleQueryOrNull return null`() = runBlocking {
+    fun `singleQueryOrNull return null`(): Unit = blockingDetect {
         // when
         val actual = queryFactory.singleQueryOrNull<Order> {
             select(entity(Order::class))
@@ -111,7 +111,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
     }
 
     @Test
-    fun singleQueryOrNull() = runBlocking {
+    fun singleQueryOrNull(): Unit = blockingDetect {
         // when
         val actual = queryFactory.singleQueryOrNull<Order> {
             select(entity(Order::class))
@@ -124,7 +124,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
     }
 
     @Test
-    fun listQuery() = runBlocking {
+    fun listQuery(): Unit = blockingDetect {
         // when
         val actual = queryFactory.listQuery<Order> {
             select(entity(Order::class))
@@ -139,7 +139,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
     }
 
     @Test
-    fun subquery() = runBlocking {
+    fun subquery(): Unit = blockingDetect {
         val subquery = queryFactory.subquery<Long> {
             val order = entity(Order::class, "o")
 
@@ -160,7 +160,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
 
 
     @Test
-    fun updateQuery() = runBlocking {
+    fun updateQuery(): Unit = blockingDetect {
         // when
         queryFactory.updateQuery<Order> {
             where(col(Order::purchaserId).equal(2000))
@@ -179,7 +179,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
     }
 
     @Test
-    fun transaction() = runBlocking {
+    fun transaction(): Unit = blockingDetect {
         // when
         try {
             queryFactory.transactionWithFactory { session, queryFactory ->
@@ -219,7 +219,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
     }
 
     @Test
-    fun deleteQuery() = runBlocking {
+    fun deleteQuery(): Unit = blockingDetect {
         // when
         queryFactory.deleteQuery<OrderItem> {
             where(col(OrderItem::id).equal(order1.groups.first().items.first().id))
@@ -237,7 +237,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
     }
 
     @Test
-    fun pageQuery() = runBlocking {
+    fun pageQuery(): Unit = blockingDetect {
         // when
         val actual = queryFactory.pageQuery<Long>(PageRequest.of(1, 2, Sort.by("id"))) {
             select(col(Order::id))
@@ -254,7 +254,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
     }
 
     @Test
-    fun pageExtractWhereQuery() = runBlocking {
+    fun pageExtractWhereQuery(): Unit = blockingDetect {
         // given
         val pageable = PageRequest.of(0, 10)
         fun WhereDsl.equalValueSpec() = column(Order::purchaserId).equal(1000L)
@@ -281,7 +281,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
     }
 
     @Test
-    fun `pageQuery with countProjection`() = runBlocking {
+    fun `pageQuery with countProjection`(): Unit = blockingDetect {
         // given
         val pageable = PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, Order::id.name))
 

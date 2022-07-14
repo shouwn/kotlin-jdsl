@@ -6,16 +6,16 @@ import com.linecorp.kotlinjdsl.querydsl.expression.col
 import com.linecorp.kotlinjdsl.test.entity.Address
 import com.linecorp.kotlinjdsl.test.entity.order.OrderAddress
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import org.junit.jupiter.api.Test
 
 abstract class AbstractCriteriaDeleteIntegrationTest<S> : CriteriaQueryDslIntegrationTest<S> {
     @Test
-    fun delete() = runBlocking {
+    fun delete(): Unit = blockingDetect {
         // when
         val address1 = orderAddress { }
 
-        persistAll(address1)
+        persist(address1)
 
         withFactory { queryFactory ->
             queryFactory.deleteQuery<OrderAddress> {
@@ -38,11 +38,11 @@ abstract class AbstractCriteriaDeleteIntegrationTest<S> : CriteriaQueryDslIntegr
     }
 
     @Test
-    fun deleteEmbedded() = runBlocking {
+    fun deleteEmbedded(): Unit = blockingDetect {
         // given
         val address1 = orderAddress { }
 
-        persistAll(address1)
+        persist(address1)
 
         withFactory { queryFactory ->
             queryFactory.deleteQuery<OrderAddress> {

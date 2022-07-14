@@ -11,4 +11,9 @@ dependencies {
 
     implementation(Dependencies.kotlinReflect)
     implementation(Dependencies.coroutineJdk8)
+    implementation(Dependencies.blockhound)
+    implementation(Dependencies.coroutineDebug)
+    implementation(Dependencies.junitPlatformLauncher)
+    implementation(Dependencies.vertxJdbcClient)
+    implementation(Dependencies.springJpa)
 }

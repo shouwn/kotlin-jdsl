@@ -4,7 +4,7 @@ import com.linecorp.kotlinjdsl.listQuery
 import com.linecorp.kotlinjdsl.querydsl.expression.col
 import com.linecorp.kotlinjdsl.test.entity.order.Order
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -14,13 +14,13 @@ abstract class AbstractCriteriaQueryDslLimitIntegrationTest<S> : CriteriaQueryDs
     private val order3 = order { }
 
     @BeforeEach
-    fun setUp() = runBlocking {
+    fun setUp(): Unit = blockingDetect {
         persistAll(order1, order2, order3)
 
     }
 
     @Test
-    fun offset() = runBlocking {
+    fun offset(): Unit = blockingDetect {
         // when
         val orderIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -36,7 +36,7 @@ abstract class AbstractCriteriaQueryDslLimitIntegrationTest<S> : CriteriaQueryDs
     }
 
     @Test
-    fun maxResults() = runBlocking {
+    fun maxResults(): Unit = blockingDetect {
         // when
         val orderIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -52,7 +52,7 @@ abstract class AbstractCriteriaQueryDslLimitIntegrationTest<S> : CriteriaQueryDs
     }
 
     @Test
-    fun limit() = runBlocking {
+    fun limit(): Unit = blockingDetect {
         // when
         val orderIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {

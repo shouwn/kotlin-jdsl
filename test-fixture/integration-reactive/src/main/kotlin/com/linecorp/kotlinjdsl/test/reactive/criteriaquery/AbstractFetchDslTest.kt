@@ -6,18 +6,18 @@ import com.linecorp.kotlinjdsl.test.entity.order.OrderAddress
 import com.linecorp.kotlinjdsl.test.entity.order.OrderGroup
 import com.linecorp.kotlinjdsl.test.entity.order.OrderItem
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import org.junit.jupiter.api.Test
 
 abstract class AbstractFetchDslTest<S> : CriteriaQueryDslIntegrationTest<S>, WithKotlinJdslAssertions {
     @Test
-    fun fetchOneToOne() = runBlocking {
+    fun fetchOneToOne(): Unit = blockingDetect {
         // given
         val address1 = orderAddress { }
         val group1 = orderGroup { address = address1 }
         val order1 = order { groups = hashSetOf(group1) }
 
-        persistAll(order1)
+        persist(order1)
 
         // when
         val query = withFactory { queryFactory ->
@@ -35,7 +35,7 @@ abstract class AbstractFetchDslTest<S> : CriteriaQueryDslIntegrationTest<S>, Wit
     }
 
     @Test
-    fun fetchOneToMany() = runBlocking {
+    fun fetchOneToMany(): Unit = blockingDetect {
         // given
         val orderItem1 = orderItem { productId = 1000 }
         val orderItem2 = orderItem { productId = 2000 }
@@ -43,7 +43,7 @@ abstract class AbstractFetchDslTest<S> : CriteriaQueryDslIntegrationTest<S>, Wit
         val group1 = orderGroup { items = hashSetOf(orderItem1, orderItem2) }
         val order1 = order { groups = hashSetOf(group1) }
 
-        persistAll(order1)
+        persist(order1)
 
         // when
         val query = withFactory { queryFactory ->

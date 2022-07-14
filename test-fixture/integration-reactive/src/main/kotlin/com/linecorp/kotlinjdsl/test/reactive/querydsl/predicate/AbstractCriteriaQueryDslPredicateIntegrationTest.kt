@@ -6,7 +6,7 @@ import com.linecorp.kotlinjdsl.singleQuery
 import com.linecorp.kotlinjdsl.test.entity.order.Order
 import com.linecorp.kotlinjdsl.test.entity.order.OrderItem
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -32,13 +32,13 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     private val orders = listOf(order1, order2, order3)
 
     @BeforeEach
-    fun setUp() = runBlocking {
+    fun setUp(): Unit = blockingDetect {
         persistAll(order1, order2, order3)
 
     }
 
     @Test
-    fun not() = runBlocking {
+    fun not(): Unit = blockingDetect {
         // when
         val orderIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -54,7 +54,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun and() = runBlocking {
+    fun and(): Unit = blockingDetect {
         // when
         val orderItemId = withFactory { queryFactory ->
             queryFactory.singleQuery<Long> {
@@ -74,7 +74,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun or() = runBlocking {
+    fun or(): Unit = blockingDetect {
         // when
         val orderItemIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -94,7 +94,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun equal() = runBlocking {
+    fun equal(): Unit = blockingDetect {
         // when
         val orderItemId = withFactory { queryFactory ->
             queryFactory.singleQuery<Long> {
@@ -109,7 +109,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun notEqual() = runBlocking {
+    fun notEqual(): Unit = blockingDetect {
         // when
         val orderItemId = withFactory { queryFactory ->
             queryFactory.singleQuery<Long> {
@@ -124,7 +124,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun `in`() = runBlocking {
+    fun `in`(): Unit = blockingDetect {
         // when
         val orderItemIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -139,7 +139,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun lessThanOrEqualTo() = runBlocking {
+    fun lessThanOrEqualTo(): Unit = blockingDetect {
         // when
         val orderItemIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -154,7 +154,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun lessThan() = runBlocking {
+    fun lessThan(): Unit = blockingDetect {
         // when
         val orderItemIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -169,7 +169,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun greaterThanOrEqualTo() = runBlocking {
+    fun greaterThanOrEqualTo(): Unit = blockingDetect {
         // when
         val orderItemIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -184,7 +184,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun greaterThan() = runBlocking {
+    fun greaterThan(): Unit = blockingDetect {
         // when
         val orderItemIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -199,7 +199,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun between() = runBlocking {
+    fun between(): Unit = blockingDetect {
         // when
         val orderItemIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -214,7 +214,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun isTrue() = runBlocking {
+    fun isTrue(): Unit = blockingDetect {
         // when
         val orderItemIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -229,7 +229,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun isFalse() = runBlocking {
+    fun isFalse(): Unit = blockingDetect {
         // when
         val orderItemIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -244,7 +244,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun isNull() = runBlocking {
+    fun isNull(): Unit = blockingDetect {
         // when
         val orderItemIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -259,7 +259,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun isNotNull() = runBlocking {
+    fun isNotNull(): Unit = blockingDetect {
         // when
         val orderItemIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -274,7 +274,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun like() = runBlocking {
+    fun like(): Unit = blockingDetect {
         // when
         val orderItemIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -289,7 +289,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun notLike() = runBlocking {
+    fun notLike(): Unit = blockingDetect {
         // when
         val orderItemIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {

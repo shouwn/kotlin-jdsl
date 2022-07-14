@@ -8,7 +8,7 @@ import com.linecorp.kotlinjdsl.querydsl.from.treat
 import com.linecorp.kotlinjdsl.subquery
 import com.linecorp.kotlinjdsl.test.entity.employee.*
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -20,12 +20,12 @@ abstract class AbstractCriteriaQueryDslFromTreatIntegrationTest<S> : CriteriaQue
     private val persistProjects = createProjects()
 
     @BeforeEach
-    fun setUp() = runBlocking {
+    fun setUp(): Unit = blockingDetect {
         persistAll(*persistProjects.toTypedArray())
     }
 
     @Test
-    fun getByPartTimeEmployeesWeeklySalary() = runBlocking {
+    fun getByPartTimeEmployeesWeeklySalary(): Unit = blockingDetect {
         withFactory { queryFactory ->
             // when
             val employees = queryFactory.listQuery<Employee> {
@@ -47,7 +47,7 @@ abstract class AbstractCriteriaQueryDslFromTreatIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun getByPartTimeAndContractEmployeesBySalary() = runBlocking {
+    fun getByPartTimeAndContractEmployeesBySalary(): Unit = blockingDetect {
         withFactory { queryFactory ->
             // when
             val employees = queryFactory.listQuery<Employee> {
@@ -78,7 +78,7 @@ abstract class AbstractCriteriaQueryDslFromTreatIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun getProjectByFullTimeEmployeesSalarySelectFullTimeEmployee() = runBlocking {
+    fun getProjectByFullTimeEmployeesSalarySelectFullTimeEmployee(): Unit = blockingDetect {
         withFactory { queryFactory ->
             // when
             val employees = queryFactory.listQuery<FullTimeEmployee> {
@@ -105,7 +105,7 @@ abstract class AbstractCriteriaQueryDslFromTreatIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun getProjectByFullTimeEmployeesSalaryWithFetch() = runBlocking {
+    fun getProjectByFullTimeEmployeesSalaryWithFetch(): Unit = blockingDetect {
         withFactory { queryFactory ->
             // when
             val projects = queryFactory.listQuery<Project> {
@@ -125,7 +125,7 @@ abstract class AbstractCriteriaQueryDslFromTreatIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun getProjectByFullTimeEmployeesSalaryAndPartTimeEmployeeWeeklySalaryWithFetch() = runBlocking {
+    fun getProjectByFullTimeEmployeesSalaryAndPartTimeEmployeeWeeklySalaryWithFetch(): Unit = blockingDetect {
         withFactory { queryFactory ->
             // when
             val projects = queryFactory.listQuery<Project> {
@@ -163,7 +163,7 @@ abstract class AbstractCriteriaQueryDslFromTreatIntegrationTest<S> : CriteriaQue
         getProjectsWithSupervisorSalaryEqualBySubqueryFullTimeEmployeesSalaryAndPartTimeEmployeeWeeklySalary(true)
     }
 
-    fun getProjectsWithSupervisorSalaryEqualBySubqueryFullTimeEmployeesSalaryAndPartTimeEmployeeWeeklySalary(fetch: Boolean) = runBlocking {
+    fun getProjectsWithSupervisorSalaryEqualBySubqueryFullTimeEmployeesSalaryAndPartTimeEmployeeWeeklySalary(fetch: Boolean): Unit = blockingDetect {
         withFactory { queryFactory ->
             // when
             val sub = queryFactory.subquery<Long> {

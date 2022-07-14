@@ -17,7 +17,7 @@ abstract class AbstractFetchDslTest : AbstractCriteriaQueryDslIntegrationTest(),
         val order1 = order { groups = hashSetOf(group1) }
 
         entityManager.run {
-            persistAll(order1)
+            persist(order1)
             flushAndClear()
         }
 
@@ -46,7 +46,7 @@ abstract class AbstractFetchDslTest : AbstractCriteriaQueryDslIntegrationTest(),
         val order1 = order { groups = hashSetOf(group1) }
 
         entityManager.run {
-            persistAll(order1)
+            persist(order1)
             flushAndClear()
         }
 

@@ -8,12 +8,12 @@ import com.linecorp.kotlinjdsl.test.entity.order.Order
 import com.linecorp.kotlinjdsl.test.entity.order.OrderGroup
 import com.linecorp.kotlinjdsl.test.entity.order.OrderItem
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import org.junit.jupiter.api.Test
 
 abstract class AbstractGroupByDslTest<S> : CriteriaQueryDslIntegrationTest<S>, WithKotlinJdslAssertions {
     @Test
-    fun groupBy() = runBlocking {
+    fun groupBy(): Unit = blockingDetect {
         // given
         data class Row(
             val purchaserId: Long,
@@ -57,7 +57,7 @@ abstract class AbstractGroupByDslTest<S> : CriteriaQueryDslIntegrationTest<S>, W
     }
 
     @Test
-    fun having() = runBlocking {
+    fun having(): Unit = blockingDetect {
         // given
         val orderItem1 = orderItem { productId = 100; quantity = 5 }
         val orderItem2 = orderItem { productId = 200; quantity = 2 }
@@ -77,7 +77,7 @@ abstract class AbstractGroupByDslTest<S> : CriteriaQueryDslIntegrationTest<S>, W
 
         // when
         val query = withFactory { queryFactory ->
-            queryFactory.listQuery<Long> {
+            queryFactory.listQuery {
                 select(col(Order::purchaserId))
                 from(entity(Order::class))
                 join(Order::groups)

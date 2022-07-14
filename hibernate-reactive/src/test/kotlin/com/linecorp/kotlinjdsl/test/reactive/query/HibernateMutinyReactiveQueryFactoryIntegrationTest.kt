@@ -14,9 +14,9 @@ import com.linecorp.kotlinjdsl.test.entity.order.OrderGroup
 import com.linecorp.kotlinjdsl.test.entity.order.OrderItem
 import com.linecorp.kotlinjdsl.test.reactive.HibernateCriteriaIntegrationTest
 import com.linecorp.kotlinjdsl.test.reactive.MutinySessionFactoryExtension
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import com.linecorp.kotlinjdsl.updateQuery
 import io.smallrye.mutiny.coroutines.awaitSuspending
-import kotlinx.coroutines.runBlocking
 import org.hibernate.reactive.mutiny.Mutiny
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -29,7 +29,7 @@ class HibernateMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, WithKotlin
     override lateinit var entityManagerFactory: EntityManagerFactory
 
     @Test
-    fun executeSessionWithFactory() = runBlocking {
+    fun executeSessionWithFactory(): Unit = blockingDetect {
         val queryFactory = HibernateMutinyReactiveQueryFactory(
             sessionFactory = factory, subqueryCreator = SubqueryCreatorImpl()
         )
@@ -46,14 +46,12 @@ class HibernateMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, WithKotlin
         }
 
         assertThat(actual.id).isEqualTo(order.id)
-        Unit
     }
 
     @Test
-    fun withFactoryMultiOperations() = runBlocking {
-        val sessionFactory = initFactory<Mutiny.SessionFactory>()
+    fun withFactoryMultiOperations(): Unit = blockingDetect {
         val queryFactory = HibernateMutinyReactiveQueryFactory(
-            sessionFactory = sessionFactory, subqueryCreator = SubqueryCreatorImpl()
+            sessionFactory = factory, subqueryCreator = SubqueryCreatorImpl()
         )
         val order = order { purchaserId = 5000 }
         persist(order)
@@ -74,11 +72,10 @@ class HibernateMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, WithKotlin
         }
 
         assertThat(actual.id).isEqualTo(order.id)
-        sessionFactory.close()
     }
 
     @Test
-    fun listQuery(): Unit = runBlocking {
+    fun listQuery(): Unit = blockingDetect {
         val order = order {}
         persist(order)
 
@@ -100,7 +97,7 @@ class HibernateMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, WithKotlin
     }
 
     @Test
-    fun singleQuery(): Unit = runBlocking {
+    fun singleQuery(): Unit = blockingDetect {
         val order = order {}
         persist(order)
 
@@ -123,7 +120,7 @@ class HibernateMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, WithKotlin
     }
 
     @Test
-    fun singleQueryOrNull(): Unit = runBlocking {
+    fun singleQueryOrNull(): Unit = blockingDetect {
         val order = order {}
         persist(order)
 
@@ -146,7 +143,7 @@ class HibernateMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, WithKotlin
     }
 
     @Test
-    fun `singleQueryOrNull null`(): Unit = runBlocking {
+    fun `singleQueryOrNull null`(): Unit = blockingDetect {
         val order = order {}
         persist(order)
 
@@ -168,7 +165,7 @@ class HibernateMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, WithKotlin
     }
 
     @Test
-    fun updateQuery(): Unit = runBlocking {
+    fun updateQuery(): Unit = blockingDetect {
         val order = order {}
         persist(order)
 
@@ -194,7 +191,7 @@ class HibernateMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, WithKotlin
     }
 
     @Test
-    fun deleteQuery(): Unit = runBlocking {
+    fun deleteQuery(): Unit = blockingDetect {
         val order = order {}
         persist(order)
 
@@ -215,7 +212,7 @@ class HibernateMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, WithKotlin
     }
 
     @Test
-    fun subquery(): Unit = runBlocking {
+    fun subquery(): Unit = blockingDetect {
         val orderItem1 = orderItem { }
         val orderItem2 = orderItem { }
 
@@ -249,7 +246,7 @@ class HibernateMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, WithKotlin
     }
 
     @Test
-    fun testTransaction(): Unit = runBlocking {
+    fun testTransaction(): Unit = blockingDetect {
         val order = order {}
         persist(order)
 
@@ -295,7 +292,7 @@ class HibernateMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, WithKotlin
     }
 
     @Test
-    fun unwrap(): Unit = runBlocking {
+    fun unwrap(): Unit = blockingDetect {
         val order = order {}
         persist(order)
 

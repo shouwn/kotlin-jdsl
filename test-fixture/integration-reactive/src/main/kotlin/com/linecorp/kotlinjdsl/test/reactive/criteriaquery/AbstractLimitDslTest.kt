@@ -5,12 +5,12 @@ import com.linecorp.kotlinjdsl.querydsl.expression.col
 import com.linecorp.kotlinjdsl.test.WithKotlinJdslAssertions
 import com.linecorp.kotlinjdsl.test.entity.order.Order
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import org.junit.jupiter.api.Test
 
 abstract class AbstractLimitDslTest<S> : CriteriaQueryDslIntegrationTest<S>, WithKotlinJdslAssertions {
     @Test
-    fun offset() = runBlocking {
+    fun offset(): Unit = blockingDetect {
         // given
         val order1 = order { purchaserId = 1000 }
         val order2 = order { purchaserId = 2000 }
@@ -20,7 +20,7 @@ abstract class AbstractLimitDslTest<S> : CriteriaQueryDslIntegrationTest<S>, Wit
 
         // when
         val query = withFactory { queryFactory ->
-            queryFactory.listQuery<Long> {
+            queryFactory.listQuery {
                 select(col(Order::purchaserId))
                 from(entity(Order::class))
                 orderBy(col(Order::purchaserId).asc())
@@ -33,7 +33,7 @@ abstract class AbstractLimitDslTest<S> : CriteriaQueryDslIntegrationTest<S>, Wit
     }
 
     @Test
-    fun maxResults() = runBlocking {
+    fun maxResults(): Unit = blockingDetect {
         // given
         val order1 = order { purchaserId = 1000 }
         val order2 = order { purchaserId = 2000 }
@@ -43,7 +43,7 @@ abstract class AbstractLimitDslTest<S> : CriteriaQueryDslIntegrationTest<S>, Wit
 
         // when
         val query = withFactory { queryFactory ->
-            queryFactory.listQuery<Long> {
+            queryFactory.listQuery {
                 select(col(Order::purchaserId))
                 from(entity(Order::class))
                 orderBy(col(Order::purchaserId).asc())

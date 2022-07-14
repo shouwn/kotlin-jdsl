@@ -12,7 +12,7 @@ import com.linecorp.kotlinjdsl.test.entity.order.OrderAddress
 import com.linecorp.kotlinjdsl.test.entity.order.OrderGroup
 import com.linecorp.kotlinjdsl.test.entity.order.OrderItem
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -31,12 +31,12 @@ abstract class AbstractCriteriaQueryDslFromIntegrationTest<S> : CriteriaQueryDsl
     private val order3 = order { purchaserId = 2000; groups = hashSetOf(group3) }
 
     @BeforeEach
-    fun setUp() = runBlocking {
+    fun setUp(): Unit = blockingDetect {
         persistAll(order1, order2, order3)
     }
 
     @Test
-    fun join() = runBlocking {
+    fun join(): Unit = blockingDetect {
         // when
         val purchaserIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -53,7 +53,7 @@ abstract class AbstractCriteriaQueryDslFromIntegrationTest<S> : CriteriaQueryDsl
     }
 
     @Test
-    fun crossJoin() = runBlocking {
+    fun crossJoin(): Unit = blockingDetect {
         // given
         val delivery1 = delivery { orderId = order1.id }
         val delivery2 = delivery { orderId = order2.id }
@@ -77,7 +77,7 @@ abstract class AbstractCriteriaQueryDslFromIntegrationTest<S> : CriteriaQueryDsl
     }
 
     @Test
-    fun associate() = runBlocking {
+    fun associate(): Unit = blockingDetect {
         // given
         val delivery1 = delivery { orderId = order1.id }
         val delivery2 = delivery { orderId = order2.id }
@@ -107,7 +107,7 @@ abstract class AbstractCriteriaQueryDslFromIntegrationTest<S> : CriteriaQueryDsl
 
 
     @Test
-    fun fetch() = runBlocking {
+    fun fetch(): Unit = blockingDetect {
         // when
         val order = withFactory { queryFactory ->
             queryFactory.singleQuery<Order> {

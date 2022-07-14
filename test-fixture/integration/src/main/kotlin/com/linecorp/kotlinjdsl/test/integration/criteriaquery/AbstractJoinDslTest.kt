@@ -21,7 +21,7 @@ abstract class AbstractJoinDslTest : AbstractCriteriaQueryDslIntegrationTest(), 
         val order1 = order { groups = hashSetOf(group1) }
 
         entityManager.run {
-            persistAll(order1)
+            persist(order1)
             flushAndClear()
         }
 
@@ -47,7 +47,7 @@ abstract class AbstractJoinDslTest : AbstractCriteriaQueryDslIntegrationTest(), 
         val order1 = order { groups = hashSetOf(orderGroup { items = hashSetOf(orderItem1, orderItem2) }) }
 
         entityManager.run {
-            persistAll(order1)
+            persist(order1)
             flushAndClear()
         }
 
@@ -72,7 +72,7 @@ abstract class AbstractJoinDslTest : AbstractCriteriaQueryDslIntegrationTest(), 
 
         val order1 = order { groups = hashSetOf(orderGroup { items = hashSetOf(orderItem1, orderItem2) }) }
 
-        entityManager.persistAll(order1)
+        entityManager.persist(order1)
         entityManager.flushAndClear()
 
         val delivery1 = delivery { orderId = order1.id }
@@ -103,7 +103,7 @@ abstract class AbstractJoinDslTest : AbstractCriteriaQueryDslIntegrationTest(), 
         val order1 = order { groups = hashSetOf(group1) }
 
         entityManager.run {
-            persistAll(order1)
+            persist(order1)
             flushAndClear()
         }
 

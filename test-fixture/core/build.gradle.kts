@@ -7,4 +7,6 @@ dependencies {
     api(Dependencies.mockk)
     api(Dependencies.assertJ)
     api(Dependencies.logback)
+
+    implementation(Dependencies.coroutineJdk8)
 }

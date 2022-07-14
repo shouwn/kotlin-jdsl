@@ -12,9 +12,15 @@ object Dependencies {
     // kotlin
     const val koltin = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect"
+    private const val blockhoundVersion = "1.0.6.RELEASE"
 
+    val blockhound = listOf(
+        "io.projectreactor.tools:blockhound:$blockhoundVersion",
+        "io.projectreactor.tools:blockhound-junit-platform:$blockhoundVersion"
+    )
     // Common
     const val javaPersistenceApi = "javax.persistence:javax.persistence-api:2.2"
+
     const val slf4j = "org.slf4j:slf4j-api:1.7.36"
     const val logback = "ch.qos.logback:logback-classic:1.2.11"
     const val hibernate = "org.hibernate:hibernate-core:5.6.9.Final"
@@ -25,6 +31,7 @@ object Dependencies {
     const val vertxJdbcClient = "io.vertx:vertx-jdbc-client:4.3.1"
     const val coroutineJdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutineVersion"
     const val coroutineReactor = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$coroutineVersion"
+    const val coroutineDebug = "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$coroutineVersion"
 
     // SpringBoot
     const val springBootStarter = "org.springframework.boot:spring-boot-starter:${springBootVersion}"
@@ -46,6 +53,7 @@ object Dependencies {
 
     // Test
     const val junit = "org.junit.jupiter:junit-jupiter:5.8.2"
+    const val junitPlatformLauncher = "org.junit.platform:junit-platform-launcher:1.8.2"
     const val assertJ = "org.assertj:assertj-core:3.22.0"
     const val mockk = "io.mockk:mockk:1.12.4"
 

@@ -30,11 +30,11 @@ import com.linecorp.kotlinjdsl.spring.reactive.SpringDataReactiveQueryFactoryImp
 import com.linecorp.kotlinjdsl.spring.reactive.query.clause.limit.SpringDataReactivePageableLimitClause
 import com.linecorp.kotlinjdsl.spring.reactive.query.clause.orderby.SpringDataReactivePageableOrderByClause
 import com.linecorp.kotlinjdsl.test.WithKotlinJdslAssertions
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.data.domain.PageImpl
@@ -183,7 +183,7 @@ internal class SpringDataReactiveQueryFactoryImplTest : WithKotlinJdslAssertions
     }
 
     @Test
-    fun pageQuery() = runBlocking {
+    fun pageQuery(): Unit = blockingDetect {
         // given
         val pageable = PageRequest.of(0, 5)
 
@@ -261,7 +261,7 @@ internal class SpringDataReactiveQueryFactoryImplTest : WithKotlinJdslAssertions
     }
 
     @Test
-    fun `pageQuery with countProjection`() = runBlocking {
+    fun `pageQuery with countProjection`(): Unit = blockingDetect {
         // given
         val pageable = PageRequest.of(0, 5)
 

@@ -5,7 +5,7 @@ import com.linecorp.kotlinjdsl.querydsl.expression.col
 import com.linecorp.kotlinjdsl.querydsl.expression.min
 import com.linecorp.kotlinjdsl.test.entity.order.Order
 import com.linecorp.kotlinjdsl.test.reactive.HibernateCriteriaIntegrationTest
-import com.linecorp.kotlinjdsl.test.reactive.runBlocking
+import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
 import org.hibernate.reactive.mutiny.Mutiny
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,12 +19,12 @@ internal class HibernateCriteriaQueryDslHintIntegrationTest : HibernateCriteriaI
     private val order3 = order { purchaserId = 2000 }
 
     @BeforeEach
-    fun setUp() = runBlocking {
+    fun setUp(): Unit = blockingDetect {
         persistAll(order1, order2, order3)
     }
 
     @Test
-    fun sqlHint() = runBlocking {
+    fun sqlHint(): Unit = blockingDetect {
         // when
         val purchaserIds = withFactory { queryFactory ->
             queryFactory.listQuery<Long> {
@@ -42,7 +42,7 @@ internal class HibernateCriteriaQueryDslHintIntegrationTest : HibernateCriteriaI
     }
 
     @Test
-    fun jpaHint() = runBlocking {
+    fun jpaHint(): Unit = blockingDetect {
         try {
             // when
             withFactory { queryFactory ->
