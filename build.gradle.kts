@@ -2,17 +2,18 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     jacoco
 
-    kotlin("jvm") version Dependencies.kotlinVersion
-    kotlin("plugin.noarg") version Dependencies.kotlinVersion
-    kotlin("plugin.allopen") version Dependencies.kotlinVersion
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.noarg)
+    alias(libs.plugins.kotlin.allopen)
 }
 
 allprojects {
     group = "com.linecorp.kotlin-jdsl"
-    version = "2.0.5.RELEASE"
+    version = "2.1.0.RELEASE"
 
     repositories {
         mavenCentral()
@@ -31,32 +32,24 @@ subprojects {
 
     apply<LocalPropertiesPlugin>()
 
-    val jdk11Required = name.contains("hibernate-reactive")
-    val javaVersion = if (jdk11Required) JavaVersion.VERSION_11 else JavaVersion.VERSION_1_8
-    java.sourceCompatibility = javaVersion
-    java.targetCompatibility = javaVersion
-
     dependencies {
-        implementation(Dependencies.koltin)
+        implementation(rootProject.libs.kotlin)
     }
 
     allOpen {
         annotation("org.springframework.context.annotation.Configuration")
         annotation("javax.persistence.Entity")
         annotation("javax.persistence.Embeddable")
+        annotation("jakarta.persistence.Entity")
+        annotation("jakarta.persistence.Embeddable")
     }
 
     noArg {
         annotation("org.springframework.context.annotation.Configuration")
         annotation("javax.persistence.Entity")
         annotation("javax.persistence.Embeddable")
-    }
-
-    tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=all")
-            jvmTarget = if (jdk11Required) "11" else "1.8"
-        }
+        annotation("jakarta.persistence.Entity")
+        annotation("jakarta.persistence.Embeddable")
     }
 
     tasks.withType<Test> {
@@ -73,5 +66,9 @@ subprojects {
                 "-XX:+AllowRedefinitionToAddDeleteMethods"
             )
         }
+    }
+
+    kotlin {
+        jvmToolchain(17)
     }
 }

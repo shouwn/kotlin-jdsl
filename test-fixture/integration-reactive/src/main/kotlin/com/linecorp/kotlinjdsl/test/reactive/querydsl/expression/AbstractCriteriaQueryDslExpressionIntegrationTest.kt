@@ -85,7 +85,7 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     fun nullLiteral(): Unit = blockingDetect {
         // when
         val literals = withFactory { queryFactory ->
-            queryFactory.listQuery<Int?> {
+            queryFactory.listQuery {
                 select(nullLiteral(Int::class.java))
                 from(entity(Order::class))
             }

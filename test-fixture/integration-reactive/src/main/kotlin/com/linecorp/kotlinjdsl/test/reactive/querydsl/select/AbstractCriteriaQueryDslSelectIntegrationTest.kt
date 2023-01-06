@@ -5,9 +5,11 @@ import com.linecorp.kotlinjdsl.querydsl.expression.col
 import com.linecorp.kotlinjdsl.querydsl.expression.count
 import com.linecorp.kotlinjdsl.querydsl.expression.function
 import com.linecorp.kotlinjdsl.querydsl.expression.max
+import com.linecorp.kotlinjdsl.querydsl.from.join
 import com.linecorp.kotlinjdsl.singleQuery
 import com.linecorp.kotlinjdsl.subquery
 import com.linecorp.kotlinjdsl.test.entity.order.Order
+import com.linecorp.kotlinjdsl.test.entity.order.OrderGroup
 import com.linecorp.kotlinjdsl.test.entity.order.OrderItem
 import com.linecorp.kotlinjdsl.test.reactive.CriteriaQueryDslIntegrationTest
 import com.linecorp.kotlinjdsl.test.reactive.blockingDetect
@@ -35,7 +37,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     fun `singleQuery - select single expression`(): Unit = blockingDetect {
         // when
         val purchaserId = withFactory { queryFactory ->
-            queryFactory.singleQuery<Long> {
+            queryFactory.singleQuery {
                 select(max(Order::id))
                 from(entity(Order::class))
             }
@@ -64,7 +66,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     fun `listQuery - select single column`(): Unit = blockingDetect {
         // when
         val orderIds = withFactory { queryFactory ->
-            queryFactory.listQuery<Long> {
+            queryFactory.listQuery {
                 select(col(Order::id))
                 from(entity(Order::class))
                 orderBy(col(Order::id).asc())
@@ -79,7 +81,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     fun `listQuery - select single expression`(): Unit = blockingDetect {
         // when
         val counts = withFactory { queryFactory ->
-            queryFactory.listQuery<Long> {
+            queryFactory.listQuery {
                 select(count(Order::id))
                 from(entity(Order::class))
                 groupBy(col(Order::purchaserId))
@@ -93,7 +95,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     @Test
     fun `listQuery - select distinct single column`(): Unit = blockingDetect {
         val purchaserIds = withFactory { queryFactory ->
-            queryFactory.listQuery<Long> {
+            queryFactory.listQuery {
                 selectDistinct(col(Order::purchaserId))
                 from(entity(Order::class))
                 orderBy(col(Order::purchaserId).asc())
@@ -111,14 +113,14 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     @Test
     open fun `listQuery - subquery in select, subquery in from`(): Unit = blockingDetect {
         val counts = withFactory { queryFactory ->
-            val subquery = queryFactory.subquery<Long> {
+            val subquery = queryFactory.subquery {
                 val order = entity(Order::class, "o")
 
                 select(count(col(order, Order::id)))
                 from(order)
                 where(col(order, Order::purchaserId).equal(col(Order::purchaserId)))
             }
-            queryFactory.listQuery<Long> {
+            queryFactory.listQuery {
                 select(subquery)
                 from(entity(Order::class))
                 orderBy(col(Order::id).asc())
@@ -156,5 +158,47 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
 
         // then
         assertThat(result).isEqualTo(order1.groups.first().items.first().productName.take(2))
+    }
+
+    @Test
+    fun `nestedCol - ref key fetch`() = runBlocking {
+        val result = withFactory { queryFactory ->
+            queryFactory.listQuery {
+                select(nestedCol(col(OrderGroup::order), Order::id))
+                from(entity(OrderGroup::class))
+            }
+        }
+
+        // then
+        assertThat(result).isEqualTo(listOf(order1.id, order2.id, order3.id).sorted())
+    }
+
+    @Test
+    fun `nestedCol - ref key fetch nested function`() = runBlocking {
+        val result = withFactory { queryFactory ->
+            queryFactory.listQuery {
+                select(col(OrderGroup::order).nested(Order::id))
+                from(entity(OrderGroup::class))
+            }
+        }
+
+        // then
+        assertThat(result).isEqualTo(listOf(order1.id, order2.id, order3.id).sorted())
+    }
+
+    @Test
+    fun `nestedCol - implicit join and fetch column value`() = runBlocking {
+        // when
+        val result = withFactory { queryFactory ->
+            queryFactory.listQuery {
+                select(nestedCol(col(OrderGroup::order), Order::purchaserId))
+                from(entity(OrderGroup::class))
+                join(OrderGroup::address)
+                orderBy(nestedCol(col(OrderGroup::order), Order::purchaserId).asc())
+            }
+        }
+
+        // then
+        assertThat(result).isEqualTo(listOf(order1.purchaserId, order2.purchaserId, order3.purchaserId).sorted())
     }
 }

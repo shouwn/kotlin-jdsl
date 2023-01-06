@@ -16,7 +16,7 @@ There are several libraries in the easy way to use JPA. However, those libraries
 If you want to know more about the background of Kotlin JDSL, I recommend reading
 the [blog](https://engineering.linecorp.com/en/blog/kotlinjdsl-jpa-criteria-api-with-kotlin/)
 
-## Quick start
+## Quick start - JPA 2.2
 
 ### Reactive
 If you are interested in JPA Reactive See [more](./reactive-core/README.md)
@@ -39,6 +39,31 @@ Add Eclipselink Kotlin JDSL and Eclipselink to dependencies
 dependencies {
     implementation("com.linecorp.kotlin-jdsl:eclipselink-kotlin-jdsl:x.y.z")
     implementation("org.eclipse.persistence:org.eclipse.persistence.jpa:x.y.z")
+}
+```
+
+### Quick Start - JPA 3.0
+
+* Currently, Hibernate Reactive Does not support JPA 3.0
+
+### Hibernate
+
+Add Hibernate Kotlin JDSL and Hibernate to dependencies
+
+```kotlin
+dependencies {
+    implementation("com.linecorp.kotlin-jdsl:hibernate-kotlin-jdsl-jakarta:x.y.z")
+    implementation("org.hibernate:hibernate-core:6.y.z") // up to 6 version
+}
+```
+
+### Eclipselink
+Add Eclipselink Kotlin JDSL and Eclipselink to dependencies
+
+```kotlin
+dependencies {
+    implementation("com.linecorp.kotlin-jdsl:eclipselink-kotlin-jdsl-jakarta:x.y.z")
+    implementation("org.eclipse.persistence:org.eclipse.persistence.jpa:4.y.z") // up to 4 version
 }
 ```
 
@@ -215,6 +240,26 @@ val authors: List<Author> = queryFactory.listQuery {
 }
 ```
 
+#### NestedColumn(Foreign Key)
+
+You can use the `nestedCol` function to get the `foreign Key` value.
+
+```kotlin
+val orderIdsInOrderGroupTable = queryFactory.listQuery {
+    select(nestedCol(col(OrderGroup::order), Order::id))
+    from(entity(OrderGroup::class))
+}
+```
+
+You can get the value of `foreign Key` using `nested`, an extension function in `ColumnSpec`.
+
+```kotlin
+val orderIdsInOrderGroupTable = queryFactory.listQuery<Long> {
+    select(col(OrderGroup::order).nested(Order::id))
+    from(entity(OrderGroup::class))
+}
+```
+
 ### Predicate
 
 Kotlin JDSL supports various predicates.
@@ -275,6 +320,54 @@ val books = queryFactory.listQuery<Book> {
 }
 ```
 
+#### Exists
+
+Subquery exists expression
+
+```kotlin
+val orders = queryFactory.listQuery {
+    val entity: EntitySpec<Order> = entity(Order::class)
+    select(entity)
+    from(entity)
+    where(
+        exists(queryFactory.subquery<Long> {
+            val orderGroupEntity = entity(OrderGroup::class)
+            select(literal(1))
+            from(orderGroupEntity)
+            where(
+                and(
+                    col(OrderGroup::orderGroupName).equal("orderGroup1"),
+                    col(OrderGroup::order).equal(entity)
+                )
+            )
+        })
+    )
+}
+```
+
+Subquery not exists expression
+
+```kotlin
+val orders = queryFactory.listQuery {
+    val entity: EntitySpec<Order> = entity(Order::class)
+    select(entity)
+    from(entity)
+    where(
+        notExists(queryFactory.subquery<Long> {
+            val orderGroupEntity = entity(OrderGroup::class)
+            select(literal(1))
+            from(orderGroupEntity)
+            where(
+                and(
+                    col(OrderGroup::orderGroupName).equal("orderGroup1"),
+                    col(OrderGroup::order).equal(entity)
+                )
+            )
+        })
+    )
+}
+```
+
 #### Alias
 
 There may be models with the two associations of same type. In this case, separate the Entity using alias.
@@ -292,6 +385,7 @@ val orders = queryFactory.listQuery<Order> {
 #### associate
 
 associate behaves similarly to join, and operates exactly the same as join in select, and since Join cannot be used in update/delete, use associate to associate the relationship with other internally mapped objects (ex: @Embedded) You can build it and run the query.
+
 ```kotlin
 val query = queryFactory.selectQuery<String> {
     select(col(Address::zipCode))
@@ -345,6 +439,8 @@ val projects = queryFactory.listQuery<Project> {
 For Hibernate, the issue at [issue](https://discourse.hibernate.org/t/jpa-downcast-criteria-treat-vs-jpql-treat/2231) is currently unresolved and an additional inner(left) join is added to make the result It may come out as a duplicate. 
 So you should always apply distinct to select above like examples
 
+--> It works normally after hibernate 6(jakarta) version. If you are using kotlin-jdsl JPA 3.0 or later, no problem.
+
 If you are using Hibernate and want to fetch downcasting entities, the query cannot be executed normally. That is, the example below will result in a runtime error because of this [issue](https://discourse.hibernate.org/t/can-fetch-be-used-as-parameter-of-treat-for-downcasting/3301).
 
 ```kotlin
@@ -380,6 +476,8 @@ val projects = queryFactory.listQuery<Project> {
 ```
 
 If you want to use downcasting entity in select clause, Eclipselink does not support that function. An example is as follows.
+
+--> Since hibernate 6 (jakarta) version, it does not work normally like eclipselink. This feature is not available if you are using kotlin-jdsl JPA 3.0 or higher.
 
 ```kotlin
 val employees = queryFactory.listQuery<FullTimeEmployee> {
