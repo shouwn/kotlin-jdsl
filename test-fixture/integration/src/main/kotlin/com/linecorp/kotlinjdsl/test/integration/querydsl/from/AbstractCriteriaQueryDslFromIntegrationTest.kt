@@ -61,7 +61,7 @@ abstract class AbstractCriteriaQueryDslFromIntegrationTest : AbstractCriteriaQue
         entityManager.flushAndClear()
 
         // when
-        val purchaserIds = queryFactory.listQuery<Long> {
+        val purchaserIds = queryFactory.listQuery {
             selectDistinct(col(Delivery::id))
             from(entity(Delivery::class))
             join(Order::class, on { col(Delivery::orderId).equal(col(Order::id)) })

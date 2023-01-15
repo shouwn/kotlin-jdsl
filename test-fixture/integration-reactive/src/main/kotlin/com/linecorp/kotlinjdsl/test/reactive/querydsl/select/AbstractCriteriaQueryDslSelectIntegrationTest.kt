@@ -161,7 +161,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     }
 
     @Test
-    fun `nestedCol - ref key fetch`() = runBlocking {
+    fun `nestedCol - ref key fetch`() = blockingDetect {
         val result = withFactory { queryFactory ->
             queryFactory.listQuery {
                 select(nestedCol(col(OrderGroup::order), Order::id))
@@ -174,7 +174,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     }
 
     @Test
-    fun `nestedCol - ref key fetch nested function`() = runBlocking {
+    fun `nestedCol - ref key fetch nested function`() = blockingDetect {
         val result = withFactory { queryFactory ->
             queryFactory.listQuery {
                 select(col(OrderGroup::order).nested(Order::id))
@@ -187,7 +187,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest<S> : CriteriaQueryD
     }
 
     @Test
-    fun `nestedCol - implicit join and fetch column value`() = runBlocking {
+    fun `nestedCol - implicit join and fetch column value`() = blockingDetect {
         // when
         val result = withFactory { queryFactory ->
             queryFactory.listQuery {

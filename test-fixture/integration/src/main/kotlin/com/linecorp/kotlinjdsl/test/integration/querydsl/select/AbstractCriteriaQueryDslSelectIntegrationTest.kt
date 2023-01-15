@@ -61,7 +61,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest : AbstractCriteriaQ
     @Test
     fun `listQuery - select single column`() {
         // when
-        val orderIds = queryFactory.listQuery<Long> {
+        val orderIds = queryFactory.listQuery {
             select(col(Order::id))
             from(entity(Order::class))
             orderBy(col(Order::id).asc())
@@ -74,7 +74,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest : AbstractCriteriaQ
     @Test
     fun `listQuery - select single expression`() {
         // when
-        val counts = queryFactory.listQuery<Long> {
+        val counts = queryFactory.listQuery {
             select(count(Order::id))
             from(entity(Order::class))
             groupBy(col(Order::purchaserId))
@@ -86,7 +86,7 @@ abstract class AbstractCriteriaQueryDslSelectIntegrationTest : AbstractCriteriaQ
 
     @Test
     fun `listQuery - select distinct single column`() {
-        val purchaserIds = queryFactory.listQuery<Long> {
+        val purchaserIds = queryFactory.listQuery {
             selectDistinct(col(Order::purchaserId))
             from(entity(Order::class))
             orderBy(col(Order::purchaserId).asc())

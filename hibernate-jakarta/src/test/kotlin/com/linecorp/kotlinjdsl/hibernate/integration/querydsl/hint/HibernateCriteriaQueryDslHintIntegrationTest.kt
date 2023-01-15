@@ -23,7 +23,7 @@ internal class HibernateCriteriaQueryDslHintIntegrationTest : AbstractCriteriaQu
     @Test
     fun sqlHint() {
         // when
-        val purchaserIds = queryFactory.listQuery<Long> {
+        val purchaserIds = queryFactory.listQuery {
             select(min(Order::purchaserId))
             from(entity(Order::class))
             // Hibernate query hint handler inject query hints only when query has where clause
@@ -39,7 +39,7 @@ internal class HibernateCriteriaQueryDslHintIntegrationTest : AbstractCriteriaQu
     @Test
     fun jpaHint() {
         // when
-        val purchaserIds = queryFactory.listQuery<Long> {
+        val purchaserIds = queryFactory.listQuery {
             select(col(Order::purchaserId))
             from(entity(Order::class))
             hints("org.hibernate.comment" to "comment")

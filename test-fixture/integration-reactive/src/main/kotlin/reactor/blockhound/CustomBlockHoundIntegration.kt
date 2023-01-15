@@ -1,4 +1,4 @@
-package com.linecorp.kotlinjdsl.test.reactive.blockhound
+package reactor.blockhound
 
 import com.linecorp.kotlinjdsl.querydsl.hint.SqlReactiveQueryHintClauseProvider
 import io.vertx.core.impl.VertxThread
@@ -6,19 +6,16 @@ import io.vertx.core.impl.WorkerPool
 import io.vertx.jdbcclient.impl.AgroalCPDataSourceProvider
 import org.springframework.data.jpa.repository.query.QueryUtils
 import reactor.blockhound.BlockHound.Builder
-import reactor.blockhound.BlockingMethod
-import reactor.blockhound.BlockingOperationError
 import reactor.blockhound.integration.BlockHoundIntegration
-import java.util.*
 
 class CustomBlockHoundIntegration : BlockHoundIntegration {
     override fun applyTo(builder: Builder) {
         builder.allowBlockingCallsInside(
-            "io.vertx.jdbcclient.impl.AgroalCPDataSourceProvider",
+            AgroalCPDataSourceProvider::class.qualifiedName,
             AgroalCPDataSourceProvider::getDataSource.name
         )
         builder.allowBlockingCallsInside(SqlReactiveQueryHintClauseProvider::class.qualifiedName, "provide")
-        builder.allowBlockingCallsInside(QueryUtils::class.qualifiedName, "toOrders")
+        builder.allowBlockingCallsInside(QueryUtils::class.qualifiedName, QueryUtils::toOrders.name)
         builder.allowBlockingCallsInside(WorkerPool::class.qualifiedName, "close")
         builder.blockingMethodCallback { method: BlockingMethod ->
             val currentThread = Thread.currentThread()
@@ -29,25 +26,20 @@ class CustomBlockHoundIntegration : BlockHoundIntegration {
             val error: Error = BlockingOperationError(method)
 
             // Strip BlockHound's internal noisy frames from the stacktrace to not mislead the users
-            val stackTrace = error.stackTrace
-            val length = stackTrace.size
-            for (i in 0 until length) {
-                val stackTraceElement = stackTrace[i]
-                if ("reactor.blockhound.BlockHoundRuntime" != stackTraceElement.className) {
-                    continue
-                }
-                if ("checkBlocking" == stackTraceElement.methodName) {
-                    if (i + 1 < length) {
-                        error.stackTrace = Arrays.copyOfRange(
-                            stackTrace,
-                            i + 1,
-                            length
-                        )
+            val length = error.stackTrace.size
+            error.stackTrace
+                .forEachIndexed { i, stackTraceElement ->
+                    if (BlockHoundRuntime::class.qualifiedName != stackTraceElement.className) {
+                        return@forEachIndexed
                     }
-                    break
+                    if (stackTraceElement.methodName == BlockHoundRuntime::checkBlocking.name) {
+                        if (i + 1 < length) {
+                            error.stackTrace = error.stackTrace.drop(i).toTypedArray()
+                        }
+                        throw error
+                    }
                 }
-            }
-            throw error
         }
     }
+    inline fun <reified T : Any>T.logTag() = T::class.java.simpleName
 }

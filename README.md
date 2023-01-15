@@ -254,7 +254,7 @@ val orderIdsInOrderGroupTable = queryFactory.listQuery {
 You can get the value of `foreign Key` using `nested`, an extension function in `ColumnSpec`.
 
 ```kotlin
-val orderIdsInOrderGroupTable = queryFactory.listQuery<Long> {
+val orderIdsInOrderGroupTable = queryFactory.listQuery {
     select(col(OrderGroup::order).nested(Order::id))
     from(entity(OrderGroup::class))
 }

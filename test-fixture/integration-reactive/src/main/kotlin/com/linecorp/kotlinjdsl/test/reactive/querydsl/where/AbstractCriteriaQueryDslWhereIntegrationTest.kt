@@ -69,7 +69,7 @@ abstract class AbstractCriteriaQueryDslWhereIntegrationTest<S> : CriteriaQueryDs
                 from(order)
                 where(col(order, Order::purchaserId).lessThan(2000))
             }
-            queryFactory.listQuery<Long> {
+            queryFactory.listQuery {
                 select(col(Order::id))
                 from(entity(Order::class))
                 where(col(Order::id).`in`(subquery))
@@ -81,7 +81,7 @@ abstract class AbstractCriteriaQueryDslWhereIntegrationTest<S> : CriteriaQueryDs
     }
 
     @Test
-    fun `where using subquery with ref key`() = runBlocking {
+    fun `where using subquery with ref key`() = blockingDetect {
         // when
         val orderIds = withFactory { queryFactory ->
             val subQuery = queryFactory.subquery {
@@ -92,7 +92,7 @@ abstract class AbstractCriteriaQueryDslWhereIntegrationTest<S> : CriteriaQueryDs
                 where(col(Address::zipCode).equal("zipCode1"))
             }
 
-            queryFactory.listQuery<Long> {
+            queryFactory.listQuery {
                 select(col(Order::id))
                 from(entity(Order::class))
                 where(col(Order::id).`in`(subQuery))

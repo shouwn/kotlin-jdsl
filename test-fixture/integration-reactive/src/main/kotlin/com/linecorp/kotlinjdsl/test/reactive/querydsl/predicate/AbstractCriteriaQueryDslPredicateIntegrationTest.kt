@@ -307,7 +307,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun exists() = runBlocking {
+    fun exists() = blockingDetect {
         // when
         val existFoundOrders = withFactory { queryFactory ->
             queryFactory.listQuery {
@@ -335,7 +335,7 @@ abstract class AbstractCriteriaQueryDslPredicateIntegrationTest<S> : CriteriaQue
     }
 
     @Test
-    fun notExists() = runBlocking {
+    fun notExists() = blockingDetect {
         // when
         val existFoundOrders = withFactory { queryFactory ->
             queryFactory.listQuery {

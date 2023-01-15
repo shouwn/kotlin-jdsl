@@ -25,7 +25,7 @@ abstract class AbstractJoinDslTest<S> : CriteriaQueryDslIntegrationTest<S>, With
 
         // when
         val query = withFactory { queryFactory ->
-            queryFactory.listQuery<Long> {
+            queryFactory.listQuery {
                 select(col(OrderAddress::id))
                 from(entity(OrderGroup::class))
                 join(OrderGroup::class, OrderAddress::class, on(OrderGroup::address))
@@ -50,7 +50,7 @@ abstract class AbstractJoinDslTest<S> : CriteriaQueryDslIntegrationTest<S>, With
 
         // when
         val query = withFactory { queryFactory ->
-            queryFactory.listQuery<Long> {
+            queryFactory.listQuery {
                 select(col(OrderItem::productId))
                 from(entity(OrderGroup::class))
                 join(OrderGroup::class, OrderItem::class, on(OrderGroup::items))

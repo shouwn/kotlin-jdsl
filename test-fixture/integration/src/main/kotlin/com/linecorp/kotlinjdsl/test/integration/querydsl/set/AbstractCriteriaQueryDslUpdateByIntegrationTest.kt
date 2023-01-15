@@ -41,7 +41,7 @@ abstract class AbstractCriteriaQueryDslUpdateByIntegrationTest : AbstractCriteri
         }.executeUpdate()
 
         // then
-        assertThat(queryFactory.listQuery<Long> {
+        assertThat(queryFactory.listQuery {
             select(col(Order::purchaserId))
             from(entity(Order::class))
             groupBy(col(Order::purchaserId))

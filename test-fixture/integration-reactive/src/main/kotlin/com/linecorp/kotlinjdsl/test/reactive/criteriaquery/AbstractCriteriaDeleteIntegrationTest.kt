@@ -79,7 +79,7 @@ abstract class AbstractCriteriaDeleteIntegrationTest<S> : CriteriaQueryDslIntegr
     }
 
     @Test
-    fun deleteByRefKey() = runBlocking {
+    fun deleteByRefKey() = blockingDetect {
         // given
         val order1 = order {
             groups = hashSetOf(

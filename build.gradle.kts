@@ -61,11 +61,9 @@ subprojects {
             showStackTraces = true
             events = setOf(FAILED)
         }
-        if (jdk11Required) {
-            jvmArgs = listOf(
-                "-XX:+AllowRedefinitionToAddDeleteMethods"
-            )
-        }
+        jvmArgs = listOf(
+            "-XX:+AllowRedefinitionToAddDeleteMethods"
+        )
     }
 
     kotlin {

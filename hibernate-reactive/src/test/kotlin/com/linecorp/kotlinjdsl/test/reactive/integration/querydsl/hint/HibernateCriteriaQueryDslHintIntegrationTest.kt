@@ -27,7 +27,7 @@ internal class HibernateCriteriaQueryDslHintIntegrationTest : HibernateCriteriaI
     fun sqlHint(): Unit = blockingDetect {
         // when
         val purchaserIds = withFactory { queryFactory ->
-            queryFactory.listQuery<Long> {
+            queryFactory.listQuery {
                 select(min(Order::purchaserId))
                 from(entity(Order::class))
                 // Hibernate query hint handler inject query hints only when query has where clause
@@ -46,7 +46,7 @@ internal class HibernateCriteriaQueryDslHintIntegrationTest : HibernateCriteriaI
         try {
             // when
             withFactory { queryFactory ->
-                queryFactory.listQuery<Long> {
+                queryFactory.listQuery {
                     select(col(Order::purchaserId))
                     from(entity(Order::class))
                     hints("org.hibernate.comment" to "comment")

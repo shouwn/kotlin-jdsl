@@ -151,7 +151,7 @@ internal class SpringDataMutinyReactiveQueryFactoryIntegrationTest : EntityDsl, 
         }
 
         // then
-        assertThat(queryFactory.listQuery<Long> {
+        assertThat(queryFactory.listQuery {
             select(subquery)
             from(entity(Order::class))
             orderBy(col(Order::id).asc())

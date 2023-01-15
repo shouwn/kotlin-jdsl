@@ -70,6 +70,7 @@ h2 = { module = "com.h2database:h2", version = "2.1.214" }
 
 mutiny-core = { module = "io.smallrye.reactive:mutiny", version.ref = "mutiny" }
 mutiny-kotlin = { module = "io.smallrye.reactive:mutiny-kotlin", version.ref = "mutiny" }
+blockhound = { module = "io.projectreactor.tools:blockhound", version = "1.0.6.RELEASE" }
 
 [bundles]
 mutiny = ["mutiny-core", "mutiny-kotlin"]

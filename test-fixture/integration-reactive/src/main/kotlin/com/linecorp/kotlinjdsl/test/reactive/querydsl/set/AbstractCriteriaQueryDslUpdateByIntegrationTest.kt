@@ -90,7 +90,7 @@ abstract class AbstractCriteriaQueryDslUpdateByIntegrationTest<S> : CriteriaQuer
     }
 
     @Test
-    fun updateByRefKey() = runBlocking {
+    fun updateByRefKey() = blockingDetect {
         // given
         val orderItem1 = orderItem { }
         val order1 = order {

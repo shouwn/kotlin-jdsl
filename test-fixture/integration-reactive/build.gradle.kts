@@ -11,4 +11,9 @@ dependencies {
 
     implementation(libs.kotlin.reflect)
     implementation(libs.coroutine.jdk8)
+    implementation(libs.blockhound)
+    implementation(libs.vertx.jdbc.client)
+    implementation(libs.agroal.pool)
+    implementation(libs.spring.jpa)
+    implementation(libs.coroutine.jdk8)
 }

@@ -25,7 +25,7 @@ internal class EclipselinkCriteriaQueryDslHintIntegrationTest : AbstractCriteria
     @Test
     fun sqlHint() {
         // when
-        val purchaserIds = queryFactory.listQuery<Long> {
+        val purchaserIds = queryFactory.listQuery {
             select(min(Order::purchaserId))
             from(entity(Order::class))
             where(col(Order::id).`in`(order1.id, order2.id, order3.id))
@@ -40,7 +40,7 @@ internal class EclipselinkCriteriaQueryDslHintIntegrationTest : AbstractCriteria
     @Test
     fun jpaHint() {
         // when
-        val purchaserIds = queryFactory.listQuery<Long> {
+        val purchaserIds = queryFactory.listQuery {
             select(col(Order::purchaserId))
             from(entity(Order::class))
             hints(QueryHints.PESSIMISTIC_LOCK to PessimisticLock.LockNoWait)

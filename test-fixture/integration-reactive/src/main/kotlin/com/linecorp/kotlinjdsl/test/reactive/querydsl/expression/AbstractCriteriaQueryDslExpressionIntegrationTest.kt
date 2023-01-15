@@ -34,7 +34,7 @@ abstract class AbstractCriteriaQueryDslExpressionIntegrationTest<S> : CriteriaQu
     private val orders = listOf(order1, order2, order3)
 
     @BeforeEach
-    fun setUp(): Unit = runBlocking {
+    fun setUp(): Unit = blockingDetect {
         persistAll(order1, order2, order3)
     }
 

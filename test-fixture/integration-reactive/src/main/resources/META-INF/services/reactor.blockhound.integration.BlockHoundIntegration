@@ -1,1 +1,1 @@
-com.linecorp.kotlinjdsl.test.reactive.blockhound.CustomBlockHoundIntegration
+reactor.blockhound.CustomBlockHoundIntegration
