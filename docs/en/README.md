@@ -12,8 +12,6 @@ Kotlin JDSL is a Kotlin library that makes query building and execution easy. Yo
 
 ### JPQL
 
-You can build and execute the JPQL query using the Kotlin JDSL.
-
 ```kotlin
 val query = jpql {
     select(
